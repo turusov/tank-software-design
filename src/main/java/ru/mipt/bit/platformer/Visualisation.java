@@ -28,13 +28,5 @@ public class Visualisation {
         this.textureRegion = new TextureRegion(this.texture);
         this.rectangle = GdxGameUtils.createBoundingRectangle(this.textureRegion);
     }
-
-    public void draw(Batch batch, float rotation) {
-        GdxGameUtils.drawTextureRegionUnscaled(batch, this.textureRegion, this.rectangle, rotation);
-    }
-
-    public void draw(Batch batch) {
-        GdxGameUtils.drawTextureRegionUnscaled(batch, this.textureRegion, this.rectangle, 0f);
-    }
 }
 

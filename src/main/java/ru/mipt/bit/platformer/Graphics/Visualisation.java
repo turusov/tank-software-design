@@ -1,12 +1,11 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.Graphics;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import ru.mipt.bit.platformer.util.GdxGameUtils;
 
-public class Visualisation {
+public class Graphics {
 
     private final Texture texture;
     private final TextureRegion textureRegion;
@@ -23,7 +22,7 @@ public class Visualisation {
     public Rectangle getRectangle() {
         return rectangle;
     }
-    public Visualisation(String texturePath) {
+    public Graphics(String texturePath) {
         this.texture = new Texture(texturePath);
         this.textureRegion = new TextureRegion(this.texture);
         this.rectangle = GdxGameUtils.createBoundingRectangle(this.textureRegion);

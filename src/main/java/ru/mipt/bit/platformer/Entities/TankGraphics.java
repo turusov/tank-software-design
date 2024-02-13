@@ -11,15 +11,17 @@ import ru.mipt.bit.platformer.util.TileMovement;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
-public class Tank implements GraphicsObject {
+public class TankGraphics implements GraphicsObject {
     private Visualisation visualisation;
     private GridPoint2 coordinates;
     private TankModel tankModel;
+    private float rotation;
 
-    public Tank(Visualisation visualisation, TankModel tankModel, TiledMapTileLayer groundLayer){
+    public TankGraphics(Visualisation visualisation, TiledMapTileLayer groundLayer, TankModel tankModel){
         this.visualisation = visualisation;
-        this.coordinates = tankModel.getCoordinates();
         this.tankModel = tankModel;
+        this.coordinates = tankModel.getCoordinates();
+        this.rotation = tankModel.getDirection().getRotation();
         moveRectangleAtTileCenter(groundLayer, visualisation.getRectangle(), coordinates);
     }
     public void render(Batch batch) {

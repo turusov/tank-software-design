@@ -4,32 +4,24 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.Controllers.InputController;
-import ru.mipt.bit.platformer.Entities.Tank;
-import ru.mipt.bit.platformer.Entities.Tree;
+//import ru.mipt.bit.platformer.Entities.Level;
+import ru.mipt.bit.platformer.Entities.LevelGame;
+import ru.mipt.bit.platformer.Graphics.FieldGraphics;
+import ru.mipt.bit.platformer.Strategy.LevelRandomly;
 
-import static com.badlogic.gdx.Input.Keys.*;
+
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class GameDesktopLauncher implements ApplicationListener {
-    private Tank tank;
-    private Tree tree;
-    private Level level;
+    private FieldGraphics fieldGraphics;
     private InputController inputController;
+    private LevelGame levelGame;
+
     @Override
     public void create() {
-        level = new Level("level.tmx");
-
-        tank = new Tank(new Visualisation("images/tank_blue.png"), new GridPoint2(1,1), Direction.UP, 0.4f);
-
-        tree = new Tree(new Visualisation("images/greenTree.png"), new GridPoint2(1,3), 0f);
-
-        level.addEntityOnLevel(tank);
-        level.addEntityOnLevel(tree);
-
-        level.moveTreeRectangle(tree);
-
+        fieldGraphics = new FieldGraphics("level.tmx");
+        levelGame = new LevelGame(fieldGraphics, new LevelRandomly(3));
         inputController = new InputController();
         inputController.init();
     }
@@ -37,13 +29,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void render() {
         clearScreen();
-        float deltaTime = Gdx.graphics.getDeltaTime();
-
-        Direction direction = inputController.getDirection();
-
-        tank.tryMove(direction, deltaTime, tree);
-        level.calcInterpolatedTankCoordinates(tank);
-        level.renderAllObjects();
+        fieldGraphics.renderAllObjects();
     }
     private void clearScreen() {
         Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
@@ -68,7 +54,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void dispose() {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
-        level.dispose();
+        fieldGraphics.dispose();
     }
 
     public static void main(String[] args) {

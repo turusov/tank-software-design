@@ -1,8 +1,7 @@
 package ru.mipt.bit.platformer.Controllers.KeyboardMappings;
 
 import com.badlogic.gdx.Input;
-import ru.mipt.bit.platformer.Controllers.InputController;
-import ru.mipt.bit.platformer.Direction;
+import ru.mipt.bit.platformer.Controllers.Direction;
 
 import static com.badlogic.gdx.Input.Keys.*;
 import static com.badlogic.gdx.Input.Keys.D;

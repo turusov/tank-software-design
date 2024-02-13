@@ -1,8 +1,10 @@
-package ru.mipt.bit.platformer.Interfaces;
+package ru.mipt.bit.platformer.Actions;
+
+import ru.mipt.bit.platformer.Entities.GameEntity;
 
 import java.util.List;
 
 public interface Action {
-    public void apply(ModelObject object, float deltaTime);
-    public boolean isPossibleDoAction(ModelObject object, List<ModelObject> objects);
+    public void apply(GameEntity object, float deltaTime);
+    public boolean applyToObject(GameEntity entity, List<GameEntity> objects);
 }

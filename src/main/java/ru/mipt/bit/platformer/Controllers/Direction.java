@@ -1,12 +1,13 @@
 package ru.mipt.bit.platformer.Controllers;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.Actions.Action;
 import ru.mipt.bit.platformer.Entities.GameEntity;
 import ru.mipt.bit.platformer.Entities.MovingEntity;
 
 import java.util.List;
 
-public enum Action implements ru.mipt.bit.platformer.Actions.Action {
+public enum Direction implements Action {
     UP(new GridPoint2(0,1), 90),
     DOWN(new GridPoint2(0,-1), -90),
     LEFT(new GridPoint2(-1,0), -180),
@@ -15,7 +16,7 @@ public enum Action implements ru.mipt.bit.platformer.Actions.Action {
     private final GridPoint2 vector;
     private final float rotation;
 
-    Action(GridPoint2 vector, float rotation) {
+    Direction(GridPoint2 vector, float rotation) {
         this.vector = vector;
         this.rotation = rotation;
     }
@@ -33,7 +34,7 @@ public enum Action implements ru.mipt.bit.platformer.Actions.Action {
     }
 
     @Override
-    public boolean isPossibleApplyAction(GameEntity object, List<GameEntity> listObjectsInGame) {
+    public boolean applyToObject(GameEntity object, List<GameEntity> listObjectsInGame) {
         boolean isApplyToObject = true;
         MovingEntity movingObject = (MovingEntity) object;
         for (GameEntity obj : listObjectsInGame) {

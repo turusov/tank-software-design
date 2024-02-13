@@ -1,14 +1,18 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.Controllers;
 
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.Entities.Tank;
-import ru.mipt.bit.platformer.Entities.Tree;
+import ru.mipt.bit.platformer.Entities.GameEntity;
+import ru.mipt.bit.platformer.Entities.MovingEntity;
 
 public class CollisionDetector {
-    public static boolean ifCollides(Tank tank, Tree tree, Direction direction){
-        GridPoint2 tankTargetCoordinates = direction.add(tank.getCoordinates());
-        if(collides(tree.getCoordinates(), tankTargetCoordinates)){
-            return true;
+    public static boolean ifCollides(GameEntity object1, MovingEntity object2, Direction direction){
+        if(direction!=null && !object2.isMoving()) {
+            GridPoint2 targetCoordinates = direction.add(object2.getCoordinates());
+            object2.rotate(direction);
+            if (collides(object1.getCoordinates(), targetCoordinates)) {
+                return true;
+            }
+            return false;
         }
         return false;
     }

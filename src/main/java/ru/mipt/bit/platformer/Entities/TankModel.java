@@ -1,8 +1,7 @@
-package ru.mipt.bit.platformer.Models;
+package ru.mipt.bit.platformer.Entities;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.Controllers.Direction;
-import ru.mipt.bit.platformer.Entities.MovingEntity;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;

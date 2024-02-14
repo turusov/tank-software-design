@@ -2,15 +2,28 @@ package ru.mipt.bit.platformer.Controllers;
 
 import com.badlogic.gdx.Gdx;
 import ru.mipt.bit.platformer.Actions.Action;
+import ru.mipt.bit.platformer.Actions.MoveAction;
+import ru.mipt.bit.platformer.Entities.GameEntity;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.badlogic.gdx.Input.Keys.*;
-import static com.badlogic.gdx.Input.Keys.D;
+import static com.badlogic.gdx.Input.Keys.RIGHT;
 
-public class InputController {
+public class InputController implements Controller {
+
+    private final GameEntity gameEntity;
     private final Map<Integer, Action> keyToActionMap = new HashMap<>();
+
+    public InputController(GameEntity gameEntity) {
+        this.gameEntity = gameEntity;
+    }
+    @Override
+    public void execute() {
+        Action action = getAction();
+        if (action != null) action.apply(gameEntity);
+    }
 
     public Action getAction() {
         for (Integer key : keyToActionMap.keySet()) {
@@ -20,14 +33,18 @@ public class InputController {
         }
         return null;
     }
-    public void init(){
-        keyToActionMap.put(UP, Direction.UP);
-        keyToActionMap.put(W, Direction.UP);
-        keyToActionMap.put(LEFT, Direction.LEFT);
-        keyToActionMap.put(A, Direction.LEFT);
-        keyToActionMap.put(DOWN, Direction.DOWN);
-        keyToActionMap.put(S, Direction.DOWN);
-        keyToActionMap.put(RIGHT, Direction.RIGHT);
-        keyToActionMap.put(D, Direction.RIGHT);
+//    public void init(CollisionHandler collisionHandler) {
+//        addMapping(UP, new MoveAction(Direction.UP, collisionHandler));
+//        addMapping(W, new MoveAction(Direction.UP, collisionHandler));
+//        addMapping(LEFT, new MoveAction(Direction.LEFT, collisionHandler));
+//        addMapping(A, new MoveAction(Direction.LEFT, collisionHandler));
+//        addMapping(DOWN, new MoveAction(Direction.DOWN, collisionHandler));
+//        addMapping(S, new MoveAction(Direction.DOWN, collisionHandler));
+//        addMapping(RIGHT, new MoveAction(Direction.RIGHT, collisionHandler));
+//        addMapping(D, new MoveAction(Direction.RIGHT, collisionHandler));
+//    }
+
+    public void addMapping(int key, Action action) {
+        keyToActionMap.put(key, action);
     }
 }

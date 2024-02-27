@@ -32,6 +32,7 @@ public class TankModel implements MovingEntity {
         return destinationCoordinates;
     }
 
+
     public boolean isMoving() {
         return !isEqual(movementProgress, MOVEMENT_COMPLETED);
     }

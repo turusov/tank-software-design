@@ -5,8 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import ru.mipt.bit.platformer.Actions.MoveAction;
+import ru.mipt.bit.platformer.Adapter.AIAdapterController;
 import ru.mipt.bit.platformer.Controllers.*;
 import ru.mipt.bit.platformer.Entities.GameEntity;
+import ru.mipt.bit.platformer.Entities.MovingEntity;
 import ru.mipt.bit.platformer.Entities.PlayerLevel;
 import ru.mipt.bit.platformer.Generators.LevelDesc;
 import ru.mipt.bit.platformer.Graphics.FieldGraphics;
@@ -24,12 +26,12 @@ public class GameDesktopLauncher implements ApplicationListener {
     private PlayerLevel playerLevel;
     private CollisionHandler collisionHandler;
     private GameEntity playerEntity;
-    private AIController aiController;
+    private AIAdapterController aiController;
 
 
     @Override
     public void create() {
-        LevelShape levelShape = new LevelShape(8,10);
+        LevelShape levelShape = new LevelShape(8, 10);
         levelGenerator = new LevelRandomly(levelShape, 10, 5);
         LevelDesc levelDesc = levelGenerator.generateLevelDesc();
         playerEntity = levelDesc.getPlayerEntity();
@@ -37,15 +39,8 @@ public class GameDesktopLauncher implements ApplicationListener {
         collisionHandler = new CollisionHandler(playerLevel.getEntities(), levelShape);
         fieldGraphics = new FieldGraphics("level.tmx", playerLevel);
         inputController = new InputController(playerEntity);
-        aiController = new AIController(playerLevel.getEntities(), playerEntity);
+        aiController = new AIAdapterController(playerLevel.getEntities(), (MovingEntity) playerEntity, levelShape, collisionHandler);
         initKeyMappingsForPlayerInputController();
-        initKeyMappingsForAIController();
-    }
-    private void initKeyMappingsForAIController() {
-        aiController.addMapping(UP, new MoveAction(Direction.UP, collisionHandler));
-        aiController.addMapping(DOWN, new MoveAction(Direction.DOWN, collisionHandler));
-        aiController.addMapping(LEFT, new MoveAction(Direction.LEFT, collisionHandler));
-        aiController.addMapping(RIGHT, new MoveAction(Direction.RIGHT, collisionHandler));
     }
 
     private void initKeyMappingsForPlayerInputController() {

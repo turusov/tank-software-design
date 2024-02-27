@@ -20,11 +20,14 @@ tasks.withType(Test) {
 }
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
-
+apply plugin: "java-library"
 dependencies {
     implementation deps.gdx.gdx
     implementation deps.gdx.backend_lwjgl3
     implementation deps.gdx.platform_desktop
     implementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+    implementation 'org.mockito:mockito-core:3.5.13'
+    implementation 'com.github.a-ivanov:tank-software-design-ai:v1.0.1'
 }

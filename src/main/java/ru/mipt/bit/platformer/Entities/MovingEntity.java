@@ -8,4 +8,5 @@ public interface MovingEntity extends GameEntity {
     void rotate(Direction direction);
     void moveTo(GridPoint2 targetCoordinates);
     GridPoint2 getDestinationCoordinates();
+    Direction getDirection();
 }

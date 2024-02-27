@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static com.badlogic.gdx.Input.Keys.*;
-import static com.badlogic.gdx.Input.Keys.D;
 
 public class RandomController implements Controller {
     private final Map<Integer, Action> keyToActionMap;
@@ -30,9 +28,5 @@ public class RandomController implements Controller {
     public void execute() {
         Action action = getAction();
         if (action != null) action.apply(aiEntity);
-    }
-
-    public void addMapping(int key, Action action) {
-        keyToActionMap.put(key, action);
     }
 }

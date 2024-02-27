@@ -47,14 +47,5 @@ public class AIController implements Controller {
     public void addMapping(int key, Action action) {
         keyToActionMap.put(key, action);
     }
-//    public void init(CollisionHandler collisionHandler) {
-//        addMapping(UP, new MoveAction(Direction.UP, collisionHandler));
-//        addMapping(W, new MoveAction(Direction.UP, collisionHandler));
-//        addMapping(LEFT, new MoveAction(Direction.LEFT, collisionHandler));
-//        addMapping(A, new MoveAction(Direction.LEFT, collisionHandler));
-//        addMapping(DOWN, new MoveAction(Direction.DOWN, collisionHandler));
-//        addMapping(S, new MoveAction(Direction.DOWN, collisionHandler));
-//        addMapping(RIGHT, new MoveAction(Direction.RIGHT, collisionHandler));
-//        addMapping(D, new MoveAction(Direction.RIGHT, collisionHandler));
-//    }
+
 }

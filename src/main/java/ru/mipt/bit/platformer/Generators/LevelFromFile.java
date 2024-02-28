@@ -3,9 +3,9 @@ package ru.mipt.bit.platformer.Generators;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.Controllers.Direction;
 import ru.mipt.bit.platformer.Entities.GameEntity;
-import ru.mipt.bit.platformer.Entities.PlayerLevel;
-import ru.mipt.bit.platformer.Entities.TankModel;
-import ru.mipt.bit.platformer.Entities.TreeModel;
+import ru.mipt.bit.platformer.Entities.LogicLevel;
+import ru.mipt.bit.platformer.Entities.TankEntity;
+import ru.mipt.bit.platformer.Entities.TreeEntity;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -38,10 +38,10 @@ public class LevelFromFile implements LevelGenerator {
                         case '_':
                             break;
                         case 'T':
-                            entities.add(new TreeModel(new GridPoint2(x, _height)));
+                            entities.add(new TreeEntity(new GridPoint2(x, _height)));
                             break;
                         case 'P':
-                            entities.add(new TankModel(new GridPoint2(x, _height), Direction.UP));
+                            entities.add(new TankEntity(new GridPoint2(x, _height), Direction.UP));
                             break;
                     }
                 }
@@ -53,7 +53,7 @@ public class LevelFromFile implements LevelGenerator {
     }
 
     @Override
-    public LevelDesc generateLevelDesc() {
-        return new LevelDesc(new PlayerLevel(entities), playerEntity);
+    public PlayerLogicLevel generatePlayerLogicLevel() {
+        return new PlayerLogicLevel(new LogicLevel(entities), playerEntity);
     }
 }

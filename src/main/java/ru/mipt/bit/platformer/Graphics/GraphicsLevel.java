@@ -9,44 +9,39 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
 import ru.mipt.bit.platformer.Entities.GameEntity;
-import ru.mipt.bit.platformer.Entities.PlayerLevel;
-import ru.mipt.bit.platformer.Entities.TankModel;
-import ru.mipt.bit.platformer.Entities.TreeModel;
+import ru.mipt.bit.platformer.Entities.LogicLevel;
+import ru.mipt.bit.platformer.Entities.TankEntity;
+import ru.mipt.bit.platformer.Entities.TreeEntity;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.getSingleLayer;
 
-public class FieldGraphics {
+public class GraphicsLevel{
     private Batch batch;
     private TiledMap level;
     private MapRenderer levelRenderer;
     private TiledMapTileLayer groundLayer;
     private TileMovement tileMovement;
     private List<GraphicsEntity> graphicsEntities;
+    private LogicLevel logicLevel;
+    private Map<GameEntity, GraphicsEntity> gameEntityGraphicsEntityMap;
 
-    public List<GraphicsEntity> getGraphicsEntities() {
-        return graphicsEntities;
-    }
-
-    private List<GameEntity> entities;
-
-    public List<GameEntity> getEntities() {
-        return entities;
-    }
-
-    public FieldGraphics(String pathGameField, PlayerLevel playerLevel) {
+    public GraphicsLevel(String pathGameField, LogicLevel logicLevel) {
         this.batch = new SpriteBatch();
         this.level = new TmxMapLoader().load(pathGameField);
         this.levelRenderer = createSingleLayerMapRenderer(level, batch);
         this.groundLayer = getSingleLayer(level);
         this.tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
         this.graphicsEntities = new ArrayList<>();
-        this.entities = playerLevel.getEntities();
-        createGraphicsObjects();
+        this.logicLevel = logicLevel;
+        this.gameEntityGraphicsEntityMap = new HashMap<>();
+        createGraphicsObjects(logicLevel.getEntities());
     }
 
     public void renderAllObjects() {
@@ -65,15 +60,21 @@ public class FieldGraphics {
         batch.dispose();
     }
 
-    private void createGraphicsObjects() {
+    private void createGraphicsObjects(List<GameEntity> entities) {
         for(GameEntity gameEntity : entities){
-            if(gameEntity instanceof TreeModel){
-                graphicsEntities.add(new TreeGraphics(new Visualisation("images/greenTree.png"),groundLayer, (TreeModel) gameEntity));
-            }
-            if(gameEntity instanceof TankModel){
-                graphicsEntities.add(new TankGraphics(new Visualisation("images/tank_blue.png"),groundLayer, (TankModel) gameEntity));
-            }
+            addGraphicsEntity(gameEntity);
         }
+    }
+    public void addGraphicsEntity(GameEntity gameEntity){
+        GraphicsEntity graphicsEntity = null;
+        if(gameEntity instanceof TreeEntity){
+            graphicsEntity = new TreeGraphics(new Visualisation("images/greenTree.png"),groundLayer, (TreeEntity) gameEntity);
+        }
+        if(gameEntity instanceof TankEntity){
+            graphicsEntity = new TankGraphics(new Visualisation("images/tank_blue.png"),groundLayer, (TankEntity) gameEntity);
+        }
+        graphicsEntities.add(graphicsEntity);
+        gameEntityGraphicsEntityMap.put(gameEntity, graphicsEntity);
     }
 
     private void calculateInterpolatedScreenCoordinatesForAllObjects() {
@@ -83,6 +84,9 @@ public class FieldGraphics {
     }
     public float getDeltaTime(){
         return Gdx.graphics.getDeltaTime();
+    }
+    public void removeGraphicsEntity(GameEntity gameEntity){
+        graphicsEntities.remove(gameEntityGraphicsEntityMap.get(gameEntity));
     }
 }
 

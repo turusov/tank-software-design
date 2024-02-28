@@ -1,18 +1,14 @@
 package ru.mipt.bit.platformer.Controllers;
 
-import ru.mipt.bit.platformer.Actions.Action;
-import ru.mipt.bit.platformer.Actions.MoveAction;
+import ru.mipt.bit.platformer.Actions.Command;
 import ru.mipt.bit.platformer.Entities.GameEntity;
-import ru.mipt.bit.platformer.Entities.TankModel;
+import ru.mipt.bit.platformer.Entities.TankEntity;
 
 import java.util.*;
 
-import static com.badlogic.gdx.Input.Keys.*;
-import static com.badlogic.gdx.Input.Keys.D;
-
 public class AIController implements Controller {
     private List<Controller> aiController;
-    private Map<Integer, Action> keyToActionMap;
+    private Map<Integer, Command> keyToActionMap;
     private List<GameEntity> aiEntity;
     private GameEntity playerEntity;
 
@@ -34,7 +30,7 @@ public class AIController implements Controller {
         }
     }
     private Controller createOneAIController(GameEntity gameEntity){
-        if (gameEntity != playerEntity && gameEntity.getClass() == TankModel.class){
+        if (gameEntity != playerEntity && gameEntity.getClass() == TankEntity.class){
             return new RandomController(gameEntity, keyToActionMap);
         }
         return null;
@@ -44,8 +40,8 @@ public class AIController implements Controller {
         aiController.forEach(Controller::execute);
     }
 
-    public void addMapping(int key, Action action) {
-        keyToActionMap.put(key, action);
+    public void addMapping(int key, Command command) {
+        keyToActionMap.put(key, command);
     }
 
 }

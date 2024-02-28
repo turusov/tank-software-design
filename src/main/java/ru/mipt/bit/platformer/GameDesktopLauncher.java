@@ -4,54 +4,64 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import ru.mipt.bit.platformer.Actions.MoveAction;
-import ru.mipt.bit.platformer.Adapter.AIAdapterController;
+import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.Actions.MoveCommand;
 import ru.mipt.bit.platformer.Controllers.*;
-import ru.mipt.bit.platformer.Entities.GameEntity;
-import ru.mipt.bit.platformer.Entities.MovingEntity;
-import ru.mipt.bit.platformer.Entities.PlayerLevel;
-import ru.mipt.bit.platformer.Generators.LevelDesc;
-import ru.mipt.bit.platformer.Graphics.FieldGraphics;
-import ru.mipt.bit.platformer.Generators.LevelRandomly;
-import ru.mipt.bit.platformer.Entities.LevelShape;
+import ru.mipt.bit.platformer.Entities.*;
+import ru.mipt.bit.platformer.Generators.PlayerLogicLevel;
+import ru.mipt.bit.platformer.Graphics.GraphicsLevel;
+import ru.mipt.bit.platformer.Generators.LevelRandomGenerator;
+import ru.mipt.bit.platformer.Observer.GraphicsObserver;
+
 import static com.badlogic.gdx.Input.Keys.*;
 
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class GameDesktopLauncher implements ApplicationListener {
-    private FieldGraphics fieldGraphics;
+    private GraphicsLevel graphicsLevel;
     private InputController inputController;
-    private LevelRandomly levelGenerator;
-    private PlayerLevel playerLevel;
+    private LevelRandomGenerator levelGenerator;
+    private LogicLevel logicLevel;
     private CollisionHandler collisionHandler;
     private GameEntity playerEntity;
-    private AIAdapterController aiController;
+    private AIController aiController;
 
 
     @Override
     public void create() {
         LevelShape levelShape = new LevelShape(8, 10);
-        levelGenerator = new LevelRandomly(levelShape, 10, 5);
-        LevelDesc levelDesc = levelGenerator.generateLevelDesc();
-        playerEntity = levelDesc.getPlayerEntity();
-        playerLevel = levelDesc.getLevelGame();
-        collisionHandler = new CollisionHandler(playerLevel.getEntities(), levelShape);
-        fieldGraphics = new FieldGraphics("level.tmx", playerLevel);
+        levelGenerator = new LevelRandomGenerator(levelShape, 10, 2);
+        PlayerLogicLevel playerLogicLevel = levelGenerator.generatePlayerLogicLevel();
+        playerEntity = playerLogicLevel.getPlayerEntity();
+        logicLevel = playerLogicLevel.getLevelGame();
+        collisionHandler = new CollisionHandler(logicLevel.getEntities(), levelShape);
+        graphicsLevel = new GraphicsLevel("level.tmx", logicLevel);
         inputController = new InputController(playerEntity);
-        aiController = new AIAdapterController(playerLevel.getEntities(), (MovingEntity) playerEntity, levelShape, collisionHandler);
+//        aiController = new AIAdapterController(logicLevel.getEntities(), (MovableEntity) playerEntity, levelShape, collisionHandler);
+        aiController = new AIController(logicLevel.getEntities(), playerEntity);
         initKeyMappingsForPlayerInputController();
+        initKeyMappingsForAIController();
+
+        logicLevel.addObserver(new GraphicsObserver(graphicsLevel));
+        logicLevel.addEntity(new TankEntity(new GridPoint2(0,0), Direction.DOWN));
+    }
+    private void initKeyMappingsForAIController() {
+        aiController.addMapping(UP, new MoveCommand(Direction.UP, collisionHandler));
+        aiController.addMapping(DOWN, new MoveCommand(Direction.DOWN, collisionHandler));
+        aiController.addMapping(LEFT, new MoveCommand(Direction.LEFT, collisionHandler));
+        aiController.addMapping(RIGHT, new MoveCommand(Direction.RIGHT, collisionHandler));
     }
 
     private void initKeyMappingsForPlayerInputController() {
-        inputController.addMapping(UP, new MoveAction(Direction.UP, collisionHandler));
-        inputController.addMapping(W, new MoveAction(Direction.UP, collisionHandler));
-        inputController.addMapping(LEFT, new MoveAction(Direction.LEFT, collisionHandler));
-        inputController.addMapping(A, new MoveAction(Direction.LEFT, collisionHandler));
-        inputController.addMapping(DOWN, new MoveAction(Direction.DOWN, collisionHandler));
-        inputController.addMapping(S, new MoveAction(Direction.DOWN, collisionHandler));
-        inputController.addMapping(RIGHT, new MoveAction(Direction.RIGHT, collisionHandler));
-        inputController.addMapping(D, new MoveAction(Direction.RIGHT, collisionHandler));
+        inputController.addMapping(UP, new MoveCommand(Direction.UP, collisionHandler));
+        inputController.addMapping(W, new MoveCommand(Direction.UP, collisionHandler));
+        inputController.addMapping(LEFT, new MoveCommand(Direction.LEFT, collisionHandler));
+        inputController.addMapping(A, new MoveCommand(Direction.LEFT, collisionHandler));
+        inputController.addMapping(DOWN, new MoveCommand(Direction.DOWN, collisionHandler));
+        inputController.addMapping(S, new MoveCommand(Direction.DOWN, collisionHandler));
+        inputController.addMapping(RIGHT, new MoveCommand(Direction.RIGHT, collisionHandler));
+        inputController.addMapping(D, new MoveCommand(Direction.RIGHT, collisionHandler));
     }
 
     @Override
@@ -59,8 +69,8 @@ public class GameDesktopLauncher implements ApplicationListener {
         clearScreen();
         inputController.execute();
         aiController.execute();
-        playerLevel.update(fieldGraphics.getDeltaTime());
-        fieldGraphics.renderAllObjects();
+        logicLevel.update(graphicsLevel.getDeltaTime());
+        graphicsLevel.renderAllObjects();
         collisionHandler.update();
     }
     private void clearScreen() {
@@ -86,7 +96,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void dispose() {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
-        fieldGraphics.dispose();
+        graphicsLevel.dispose();
     }
 
     public static void main(String[] args) {

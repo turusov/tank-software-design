@@ -3,35 +3,40 @@ package ru.mipt.bit.platformer.Graphics;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.Entities.TreeEntity;
+import ru.mipt.bit.platformer.Entities.BulletEntity;
+import ru.mipt.bit.platformer.Entities.TankEntity;
 import ru.mipt.bit.platformer.util.TileMovement;
 
-import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.moveRectangleAtTileCenter;
 
-public class TreeGraphics implements GraphicsEntity {
-    private final GridPoint2 coordinates;
+public class BulletGraphics implements GraphicsEntity {
     private Visualisation visualisation;
-    private TreeEntity treeEntity;
-    public TreeGraphics(Visualisation visualisation, TiledMapTileLayer groundLayer, TreeEntity treeEntity){
+    private BulletEntity bulletEntity;
+    private GridPoint2 coordinates;
+    public BulletGraphics(Visualisation visualisation, TiledMapTileLayer groundLayer, BulletEntity bulletEntity){
         this.visualisation = visualisation;
-        this.coordinates = treeEntity.getCoordinates();
-        this.treeEntity = treeEntity;
+        this.bulletEntity = bulletEntity;
+        this.coordinates = bulletEntity.getCoordinates();
         moveRectangleAtTileCenter(groundLayer, visualisation.getRectangle(), coordinates);
     }
-    public void render(Batch batch) {
-        drawTextureRegionUnscaled(batch, visualisation.getTextureRegion(), visualisation.getRectangle(), 0f);
+
+    @Override
+    public void dispose() {
+        visualisation.getTexture().dispose();
     }
 
+    @Override
+    public void render(Batch batch) {
+        visualisation.getTexture().dispose();
+    }
+
+    @Override
     public void calculateInterpolatedScreenCoordinates(TileMovement tileMovement) {
         tileMovement.moveRectangleBetweenTileCenters(
                 visualisation.getRectangle(),
-                treeEntity.getCoordinates(),
-                treeEntity.getCoordinates(),
+                bulletEntity.getCoordinates(),
+                bulletEntity.getDestinationCoordinates(),
                 1
         );
-    }
-    public void dispose(){
-        visualisation.getTexture().dispose();
     }
 }

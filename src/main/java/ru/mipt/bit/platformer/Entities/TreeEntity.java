@@ -2,10 +2,10 @@ package ru.mipt.bit.platformer.Entities;
 
 import com.badlogic.gdx.math.GridPoint2;
 
-public class TreeModel implements GameEntity {
+public class TreeEntity implements GameEntity {
     private GridPoint2 coordinates;
 
-    public TreeModel(GridPoint2 coordinates) {
+    public TreeEntity(GridPoint2 coordinates) {
         this.coordinates = coordinates;
     }
 

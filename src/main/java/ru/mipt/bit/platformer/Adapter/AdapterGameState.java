@@ -1,6 +1,5 @@
 package ru.mipt.bit.platformer.Adapter;
 
-import com.badlogic.gdx.Input;
 import org.awesome.ai.state.GameState;
 import org.awesome.ai.state.immovable.Obstacle;
 import org.awesome.ai.state.movable.Actor;
@@ -10,8 +9,8 @@ import org.awesome.ai.state.movable.Player;
 import ru.mipt.bit.platformer.Controllers.Direction;
 import ru.mipt.bit.platformer.Entities.GameEntity;
 import ru.mipt.bit.platformer.Entities.LevelShape;
-import ru.mipt.bit.platformer.Entities.MovingEntity;
-import ru.mipt.bit.platformer.Entities.TreeModel;
+import ru.mipt.bit.platformer.Entities.MovableEntity;
+import ru.mipt.bit.platformer.Entities.TreeEntity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +31,7 @@ public class AdapterGameState {
 
 
     public AdapterGameState(List<GameEntity> entities,
-                            MovingEntity playerEntity,
+                            MovableEntity playerEntity,
                             LevelShape levelShape,
                             Map<Direction, Orientation> directionToOrientationMap) {
         this.bondActorEntity = new HashMap<>();
@@ -59,15 +58,15 @@ public class AdapterGameState {
         return bondActorEntity;
     }
 
-    private List<Bot> createBots(MovingEntity playerEntity) {
+    private List<Bot> createBots(MovableEntity playerEntity) {
         return entities.stream()
-                .filter((el) -> el instanceof MovingEntity && el != playerEntity)
-                .map((el) -> (MovingEntity) playerEntity)
+                .filter((el) -> el instanceof MovableEntity && el != playerEntity)
+                .map((el) -> playerEntity)
                 .map(this::createBot)
                 .collect(Collectors.toList());
     }
 
-    private Player createPlayer(MovingEntity playerEntity) {
+    private Player createPlayer(MovableEntity playerEntity) {
         Player player = Player.builder()
                 .source(playerEntity)
                 .x(playerEntity.getCoordinates().x)
@@ -75,7 +74,6 @@ public class AdapterGameState {
                 .destX(playerEntity.getDestinationCoordinates().x)
                 .destY(playerEntity.getDestinationCoordinates().y)
                 .orientation(directionToOrientationMap.get(playerEntity.getDirection()))
-//                .orientation(directionToOrientationMap.get(Direction.UP))
                 .build();
         bondActorEntity.put(player, playerEntity);
         return player;
@@ -83,17 +81,17 @@ public class AdapterGameState {
 
     private List<Obstacle> createObstacles() {
         return entities.stream()
-                .filter((el) -> el instanceof TreeModel)
-                .map((el) -> (TreeModel) el)
+                .filter((el) -> el instanceof TreeEntity)
+                .map((el) -> (TreeEntity) el)
                 .map(this::createObstacle)
                 .collect(Collectors.toList());
     }
 
-    private Obstacle createObstacle(TreeModel treeModel) {
-        return new Obstacle(treeModel.getCoordinates().x, treeModel.getCoordinates().y);
+    private Obstacle createObstacle(TreeEntity treeEntity) {
+        return new Obstacle(treeEntity.getCoordinates().x, treeEntity.getCoordinates().y);
     }
 
-    private Bot createBot(MovingEntity entity) {
+    private Bot createBot(MovableEntity entity) {
         Bot bot = Bot.builder()
                 .source(entity)
                 .x(entity.getCoordinates().x)
